@@ -180,6 +180,7 @@ def get_data(url):
 
     # Download and parse the rest of the pages
     # Since this is an I/O bound task we use threads
+    pool = ThreadPool(options.threads)
     pool = ThreadPool(10)
     soups.extend(
         pool.starmap(get_soup, zip(urls, indexes))
@@ -211,6 +212,15 @@ def parse_arguments():
         'url',
         action='store',
         help="A url from www.car.gr"
+    )
+
+    parser.add_argument(
+        "-j", "--threads",
+        dest="threads",
+        action="store",
+        type=int,
+        default=4,
+        help="number of threads to use when downloading pages. Defaults to 4",
     )
 
     options = parser.parse_args()

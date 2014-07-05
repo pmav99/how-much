@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 def read_lines(filename):
-    with open(filename, "rb", encoding="utf-8") as f:
+    with open(filename, "r", encoding="utf-8") as f:
         return f.readlines()
 
 

@@ -15,6 +15,7 @@ import sqlite3
 import logging
 import argparse
 import datetime
+from io import StringIO
 from urllib.request import urlopen
 from multiprocessing.dummy import Pool as ThreadPool
 
@@ -91,12 +92,17 @@ class Database(object):
         return self.fetchall(sql)
 
     def analyze(self):
-        print("\n\nAnalysis\n========\n")
-        print("General data")
-        print("The average price is: %.0f €." % self.get_average_price())
-        print("The average distance is: %.0f km." % self.get_average_distance())
-        print("The average manufacturing date is: %.0f." % self.get_average_age())
-        print()
+
+        output = StringIO()
+
+        output.write(
+            "\n\nAnalysis\n========\n\n" +
+            "General data\n" +
+            "------------\n\n" +
+            "The average price is: %.0f €.\n" % self.get_average_price() +
+            "The average distance is: %.0f km.\n" % self.get_average_distance() +
+            "The average manufacturing date is: %.0f.\n\n\n" % self.get_average_age()
+        )
 
         avg_prices = self._get_aggregate_per_year("AVG", "price")
         min_prices = self._get_aggregate_per_year("MIN", "price")
@@ -114,11 +120,19 @@ class Database(object):
                 )
             )
 
+        output.write(
+            "Yearly data\n\n" +
+            "-----------\n" +
+            "Year | # Records |     Price (€)     |   Distance (km)\n" +
+            "     |           |   AVG   |   MIN   |   AVG   |   MIN    \n" +
+            "--------------------------------------------------------\n" +
+            "\n".join(rows)
+        )
 
-        print("Year | # Records |     Price (€)     |   Distance (km)")
-        print("     |           |   AVG   |   MIN   |   AVG   |   MIN    ")
-        print("--------------------------------------------------------")
-        print("\n".join(rows))
+        text = output.getvalue()
+        output.close()
+        print(text)
+        return text
 
 
 def normalize_url(url):

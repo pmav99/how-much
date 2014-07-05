@@ -196,7 +196,7 @@ def get_data(url):
 
     # Download and parse the rest of the pages
     # Since this is an I/O bound task we use threads
-    pool = ThreadPool(options.threads)
+    #pool = ThreadPool(options.threads)
     pool = ThreadPool(10)
     soups.extend(
         pool.starmap(get_soup, zip(urls, indexes))
@@ -243,11 +243,12 @@ def parse_arguments():
     return options
 
 
-def main(options):
-    data = get_data(options.url)
+def main(url):
+    data = get_data(url)
     db = Database()
     db.insert_data(data)
-    db.analyze()
+    text = db.analyze()
+    return text
 
     # import pickle
     # # with open("data.pickle", "wb") as f:
@@ -257,4 +258,4 @@ def main(options):
 
 if __name__ == "__main__":
     options = parse_arguments()
-    main(options)
+    main(options.url)

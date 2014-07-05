@@ -147,7 +147,7 @@ def get_page_bikes(soup):
         description, distance, price, date = text[0], text[-2], text[-3], text[-5]
         # normalize data
         distance = int(float(distance[:-3]) * 1000) if "." in distance else int(distance[:-3])
-        price = int(float(price[2:]) * 1000) if "." in price else pint(price[2:])
+        price = int(float(price[2:]) * 1000) if "." in price else int(price[2:])
         month, year = map(int, date.split("/"))
         year += 2000 if year < 20 else 1990
         date = datetime.date(year, month, 1)

@@ -4,6 +4,8 @@
 from flask import Flask, request, render_template, url_for
 from analyzer import how_much
 
+import sys, logging
+logging.basicConfig(stream=sys.stderr)
 
 app = Flask(__name__)
 

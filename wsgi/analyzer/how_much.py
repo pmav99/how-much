@@ -169,7 +169,7 @@ def get_page_bikes(soup):
         month, year = map(int, date.split("/"))
         year += 2000 if year < 20 else 1990
         if year > datetime.date.today().year:
-            log.debug("Date in the future, skipping listing")
+            logger.debug("Date in the future, skipping listing")
         date = datetime.date(year, month, 1)
         bikes.append((description, distance, price, date))
     return bikes

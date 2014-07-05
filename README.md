@@ -14,7 +14,7 @@ Usage
 You call the script by passing a car.gr url.
 
 ```shell
-python how_mucy.py http://www.car.gr/query
+python how_much.py http://www.car.gr/query
 ```
 
 For example if we call the script with this [url](http://www.car.gr/classifieds/bikes/?fs=1&category=&make=298&variant=650+GS&price-from=%3E1000&price-to=&registration-from=%3E2010&registration-to=%3C2010&mileage-from=%3E0&mileage-to=%3C60000&engine_power-from=&engine_power-to=&engine_size-from=&engine_size-to=&fuel_type=&exterior_color=&significant_damage=f&gearbox_type=&kteo=&sort=&rg=3&radius=&postcode=&modified=&hi=&st=&offer_type=sale)

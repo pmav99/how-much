@@ -3,8 +3,13 @@ how-much
 
 Provides statistical information about www.car.gr ads
 
+Installation
+------------
+
+It requires [Python 3](https://www.python.org/downloads/) and [BeautifulSoup 4](http://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+
 Usage
-=====
+-----
 
 You call the script by passing a car.gr url.
 

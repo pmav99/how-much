@@ -16,6 +16,7 @@ import logging
 import argparse
 import datetime
 from urllib.request import urlopen
+from multiprocessing.dummy import Pool as ThreadPool
 
 from bs4 import BeautifulSoup
 
@@ -128,10 +129,13 @@ def normalize_url(url):
     return new_url
 
 
-def get_soup(url):
+def get_soup(url, page_index=1):
     try:
         with urlopen(url) as response:
-            return BeautifulSoup(response.read())
+            logger.info("Retrieved page: %d", page_index)
+            soup = BeautifulSoup(response.read())
+            logger.info("Parsed page: %d", page_index)
+            return soup
     except ValueError:
         logger.error("Are you sure this is a valid url? < %r > ", url)
         sys.exit(1)
@@ -163,20 +167,31 @@ def get_last_page_number(soup):
 
 
 def get_data(url):
-    data = []
-    # parse the first page
-    logger.info("Start page retrieval")
-    logger.info("Retrieving page: %d", 1)
+    # We want to determine the urls of all the available pages.
+    # In order to do so, we need to first parse the initial page.
+    logger.info("Initial page retrieval")
     url = normalize_url(url)
     first_page_url = url.format(page=1)
-    soup = get_soup(first_page_url)
-    data.extend(get_page_bikes(soup))
-    # parse the rest of the pages
-    for page in range(2, get_last_page_number(soup) + 1):
-        logger.info("Retrieving page: %d", page)
-        soup = get_soup(url.format(page=page))
+    soups = [get_soup(first_page_url)]
+    last_page = get_last_page_number(soups[0]) + 1
+    urls = [url.format(page=i) for i in range(2, last_page)]
+    indexes = [i for i in range(2, 2 + len(urls))]
+    logger.info("There are %d pages available", len(urls) + 1)
+
+    # Download and parse the rest of the pages
+    # Since this is an I/O bound task we use threads
+    pool = ThreadPool(10)
+    soups.extend(
+        pool.starmap(get_soup, zip(urls, indexes))
+    )
+    pool.close()
+    pool.join()
+
+    # extract data
+    # No real reason to do this one asynchronously too!
+    data = []
+    for soup in soups:
         data.extend(get_page_bikes(soup))
-    logger.info("Finished page retrieval")
     return data
 
 

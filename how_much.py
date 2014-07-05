@@ -154,6 +154,8 @@ def get_page_bikes(soup):
         price = int(float(price[2:]) * 1000) if "." in price else int(price[2:])
         month, year = map(int, date.split("/"))
         year += 2000 if year < 20 else 1990
+        if year > datetime.date.today().year:
+            log.debug("Date in the future, skipping listing")
         date = datetime.date(year, month, 1)
         bikes.append((description, distance, price, date))
     return bikes

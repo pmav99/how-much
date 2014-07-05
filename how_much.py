@@ -123,6 +123,8 @@ class Database(object):
 def normalize_url(url):
     new_url = re.sub(r"(.*)&pg=[0-9]+(.*)", r"\1\2", url)
     new_url += "&pg={page}"
+    if "&price-with=>" not in new_url:
+        new_url += "&price-with=>1"
     return new_url
 
 
